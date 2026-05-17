@@ -231,28 +231,37 @@
 
         .section-deck > section {
           display: block !important;
-          overflow-x: clip !important;
+          overflow: hidden !important;
         }
 
         .section-content {
-          min-height: 100svh !important;
-          min-height: 100dvh !important;
+          position: absolute !important;
+          inset: 0 !important;
+          z-index: 10;
+          width: 100%;
+          height: 100%;
+          min-height: 0 !important;
+          overflow-x: hidden;
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
+          overscroll-behavior: contain;
         }
 
         .section-video {
-          position: sticky !important;
+          position: absolute !important;
+          z-index: 0;
+          display: block;
+          inset: 0 !important;
           top: 0 !important;
           left: 0 !important;
-          right: auto !important;
-          bottom: auto !important;
+          right: 0 !important;
+          bottom: 0 !important;
           width: 100% !important;
-          height: 100svh !important;
-          height: 100dvh !important;
+          height: 100% !important;
           min-width: 100%;
           min-height: 100%;
           max-width: none !important;
-          margin-bottom: -100svh;
-          margin-bottom: -100dvh;
+          margin: 0 !important;
           flex: none;
           transform: none !important;
           object-fit: cover;
@@ -989,11 +998,20 @@
         const lockTimerRef = useRef(null);
         const touchStartRef = useRef(null);
 
+        const getScrollTarget = (panel) => {
+          const content = panel?.querySelector?.(".section-content");
+          if (!content) return panel;
+
+          const contentCanScroll = content.scrollHeight - content.clientHeight > 2;
+          return contentCanScroll ? content : panel;
+        };
+
         useEffect(() => {
           activeIndexRef.current = activeIndex;
           const section = deckRef.current?.children?.[activeIndex];
-          if (section) {
-            section.scrollTop = 0;
+          const scrollTarget = section ? getScrollTarget(section) : null;
+          if (scrollTarget) {
+            scrollTarget.scrollTop = 0;
           }
 
           Array.from(deckRef.current?.children || []).forEach((panel, index) => {
@@ -1034,15 +1052,17 @@
           const canLeavePanel = (direction) => {
             const panel = activePanel();
             if (!panel) return true;
+            const scrollTarget = getScrollTarget(panel);
+            if (!scrollTarget) return true;
 
-            const maxScroll = panel.scrollHeight - panel.clientHeight;
+            const maxScroll = scrollTarget.scrollHeight - scrollTarget.clientHeight;
             if (maxScroll <= 2) return true;
 
             if (direction > 0) {
-              return panel.scrollTop >= maxScroll - 4;
+              return scrollTarget.scrollTop >= maxScroll - 4;
             }
 
-            return panel.scrollTop <= 4;
+            return scrollTarget.scrollTop <= 4;
           };
 
           const handleWheel = (event) => {
@@ -1089,13 +1109,14 @@
           const handleTouchStart = (event) => {
             const touch = event.touches[0];
             const panel = activePanel();
-            const maxScroll = panel ? panel.scrollHeight - panel.clientHeight : 0;
+            const scrollTarget = panel ? getScrollTarget(panel) : null;
+            const maxScroll = scrollTarget ? scrollTarget.scrollHeight - scrollTarget.clientHeight : 0;
 
             touchStartRef.current = {
               x: touch.clientX,
               y: touch.clientY,
-              canLeaveDown: !panel || maxScroll <= 2 || panel.scrollTop >= maxScroll - 4,
-              canLeaveUp: !panel || maxScroll <= 2 || panel.scrollTop <= 4,
+              canLeaveDown: !scrollTarget || maxScroll <= 2 || scrollTarget.scrollTop >= maxScroll - 4,
+              canLeaveUp: !scrollTarget || maxScroll <= 2 || scrollTarget.scrollTop <= 4,
             };
           };
 
