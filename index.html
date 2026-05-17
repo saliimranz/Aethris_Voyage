@@ -205,6 +205,58 @@
         justify-content: space-between;
       }
 
+      .section-video {
+        display: block;
+        max-width: none;
+        pointer-events: none;
+      }
+
+      @media (max-width: 767px) {
+        html,
+        body,
+        #root {
+          width: 100%;
+          max-width: 100%;
+        }
+
+        .section-deck,
+        .section-deck > section {
+          width: 100vw;
+          max-width: 100%;
+        }
+
+        .section-deck > section {
+          overflow-x: clip !important;
+        }
+
+        .section-content {
+          min-height: 100svh !important;
+        }
+
+        .section-video {
+          position: fixed !important;
+          inset: 0 !important;
+          width: 100vw !important;
+          height: 100svh !important;
+          min-width: 100%;
+          min-height: 100%;
+          transform: none !important;
+          object-fit: cover;
+          object-position: center center;
+        }
+
+        .section-video-hero {
+          object-position: center top;
+        }
+
+        .section-video-voyages,
+        .section-video-worlds,
+        .section-video-innovation,
+        .section-video-plan-launch {
+          object-position: center center;
+        }
+      }
+
       @media (max-width: 380px) {
         .hero-headline {
           font-size: 3.25rem;
@@ -543,11 +595,11 @@
           <section id="hero" className="relative flex h-screen min-h-screen overflow-hidden bg-black">
             <FadingVideo
               src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260418_080021_d598092b-c4c2-4e53-8e46-94cf9064cd50.mp4"
-              className="absolute left-1/2 top-0 z-0 -translate-x-1/2 object-cover object-top"
+              className="section-video section-video-hero absolute left-1/2 top-0 z-0 -translate-x-1/2 object-cover object-top"
               style={{ width: "120%", height: "120%" }}
             />
 
-            <div className="relative z-10 flex min-h-full w-full flex-col">
+            <div className="section-content relative z-10 flex min-h-full w-full flex-col">
               <main className="flex flex-1 flex-col items-center justify-center px-4 pt-24 text-center">
                 <motion.div
                   initial={blurIn.initial}
@@ -682,9 +734,9 @@
 
         return (
           <section id={id} className="relative flex min-h-screen overflow-hidden bg-black">
-            <FadingVideo src={video} className="absolute inset-0 z-0 h-full w-full object-cover" />
+            <FadingVideo src={video} className={`section-video section-video-${id} absolute inset-0 z-0 h-full w-full object-cover`} />
 
-            <div className={`relative z-10 flex min-h-screen w-full flex-col justify-center px-8 py-28 md:px-16 lg:px-20 ${isRight ? "items-end text-right" : "items-start text-left"}`}>
+            <div className={`section-content relative z-10 flex min-h-screen w-full flex-col justify-center px-8 py-28 md:px-16 lg:px-20 ${isRight ? "items-end text-right" : "items-start text-left"}`}>
               <motion.div
                 initial={{ filter: "blur(10px)", opacity: 0, y: 20 }}
                 whileInView={{ filter: "blur(0px)", opacity: 1, y: 0 }}
@@ -784,9 +836,9 @@
       function PlanLaunch() {
         return (
           <section id="plan-launch" className="relative flex min-h-screen overflow-hidden bg-black">
-            <FadingVideo src={sectionVideos.launch} className="absolute inset-0 z-0 h-full w-full object-cover" />
+            <FadingVideo src={sectionVideos.launch} className="section-video section-video-plan-launch absolute inset-0 z-0 h-full w-full object-cover" />
 
-            <div className="relative z-10 flex min-h-screen w-full flex-col justify-end px-8 pb-12 pt-28 md:px-16 lg:px-20">
+            <div className="section-content relative z-10 flex min-h-screen w-full flex-col justify-end px-8 pb-12 pt-28 md:px-16 lg:px-20">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -832,10 +884,10 @@
           <section id="innovation" className="relative min-h-screen overflow-hidden bg-black">
             <FadingVideo
               src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260418_094631_d30ab262-45ee-4b7d-99f3-5d5848c8ef13.mp4"
-              className="absolute inset-0 z-0 h-full w-full object-cover"
+              className="section-video section-video-innovation absolute inset-0 z-0 h-full w-full object-cover"
             />
 
-            <div className="relative z-10 flex min-h-screen flex-col px-8 pb-10 pt-24 md:px-16 lg:px-20">
+            <div className="section-content relative z-10 flex min-h-screen flex-col px-8 pb-10 pt-24 md:px-16 lg:px-20">
               <motion.header
                 initial={{ filter: "blur(10px)", opacity: 0, y: 20 }}
                 whileInView={{ filter: "blur(0px)", opacity: 1, y: 0 }}
